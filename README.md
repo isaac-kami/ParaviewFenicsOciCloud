@@ -5,21 +5,21 @@
 <b>Prerequisites for deploying this architecture with Terraform:</b>
   <br></br>
 
-- an Oracle cloud account - you can try free trial
+- an Oracle cloud account - You can sign up for a 30 free days trial, at Oracle Cloud Free Tier
 - setting up OCI CLI. You can check this tutorial <a href="https://isaac-exe.gitbook.io/various-tutorials/tutorials/1.-deployment-instance/install-and-configure-oci-cli#2-configure-oci-cli">Configure OCI CLI </a>
 - setting up Terraform on the machine from which you make the deployment. You can check this tutorial <a href="https://isaac-exe.gitbook.io/various-tutorials/tutorials/1.-deployment-instance/install-and-configure-terraform">Install and Configure Terraform</a>
 
 <br></br>
-Architecture diagram:
+<b>Architecture</b>
 
-
+![alt text](https://raw.githubusercontent.com/MuchTest/pix/main/b1/arch.jpg)
 
 <br></br>
 How to deploy:
 
 <i> Before deploying, make sure:
 - you check the variables.tf and provide the necessary information (such as tenancy OCID, etc) 
-- change the path for public ssh keys - in this example it is setup as:  </i>
+- if needed, change the public ssh keys path for instances; is setup as:  </i>
 ```
   metadata = {
         ssh_authorized_keys = file("/root/.ssh/id_rsa.pub")
@@ -50,9 +50,9 @@ What the Terraform code will implement:
 - create a Service Gateway
   <br></br>
 ![alt text](https://raw.githubusercontent.com/MuchTest/pix/main/b1/n4.png)
-- create an Object Storage
+- create an Object Storage Bucket
   <br></br>
-![alt text](https://raw.githubusercontent.com/MuchTest/pix/main/b1/b1.png)
+![alt text](https://raw.githubusercontent.com/MuchTest/pix/main/b1/b2.png)
 - deploy an instance (public IP) in a public subnet behind Internet Gateway - this instance will represent the Bastion
   <br></br>
 - deploy two  instances (private IPs) in a private subnet behind a NAT Gateway
@@ -64,7 +64,7 @@ What the Terraform code will implement:
 
   <br></br>
 
-<i> As already stated, the setup and dependencies configuration is done automatically for Paraview and Fenics. </i>
+<i> As already stated, for Paraview and Fenics, the setup and dependencies configuration are done automatically. </i>
 
 <b> Steps after deploying the architecture: </b>
 
@@ -90,7 +90,12 @@ PublicIpBastion = [
 
 ```
 
-In order to access the Private Hosts (Fenics and Paraview), you will need to ssh through the bastion:
+To access the Private Hosts (Fenics and Paraview), you will need to ssh through the bastion:
+
+<i> Syntax </i>:
+```
+ssh -J ubuntu@bastion ubuntu@privatehost
+```
 
 - to access Fenics host:
 
@@ -131,10 +136,11 @@ Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1035-oracle x86_64)
 <b>Fenics and Paraview hosts to access the Object Storage</b>
 
 
-In order to access the Object Storage from Fenics instance and Paraview instance, you will need to configure OCI CLI on both of them.
+To access the Object Storage from Fenics instance and Paraview instance, configure OCI CLI on both of them.
 Make sure you add the public .pem key in the User/API Keys from OCI Cloud , otherwise you will not be able to upload or download to/from the Bucket.
 
 For setting up the OCI CLI and the API Keys in Oracle Cloud, follow this tutorial: <a href="https://isaac-exe.gitbook.io/various-tutorials/tutorials/1.-deployment-instance/install-and-configure-oci-cli#2-configure-oci-cli">Configure OCI CLI </a>
+
 
 Perform a few tests to check if configuration was properly done:
 
@@ -175,16 +181,17 @@ root@paraview-instance:/home#
 <br> </br>
 
 
-<b> Paraview and Fenics </b>
+<b> Testing environment - Paraview and Fenics </b>
 
 
-a) On theFenics instance, create the output files that can be represented graphically in Paraview Client
+a) On the Fenics instance, create the output files that can be represented graphically in Paraview Client
 
-Code example to be run on Fenics instance can be found at this tutorial (page 11):
+The code example for solving a Poisson problem can be found at below tutorial (page 13):
 https://fenicsproject.org/pub/course/lectures/2017-nordic-phdcourse/lecture_20_tools_for_visualisation.pdf
 
 
-As a reminder, the Fenics application has been configured and properly installed with Terraform code. For more details, check code remote_fenics.tf
+As a reminder, the Fenics application has been configured and properly installed with Terraform code. 
+For more details, check code for <i>remote_fenics.tf</i>
 
 
 ```
@@ -205,7 +212,7 @@ Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1035-oracle x86_64)
  root@fenics-instance:~#
 ```
 <br></br>
-The example code (page 11):
+<b>Implementing the Poisson example code from page 13</b>
 
 Suppose you run this code under folder /opt/test:
 
@@ -251,7 +258,7 @@ total 1456
 root@fenics-instance:/opt/test#
 ```
 <br></br>
-Upload files to Object Storage:
+Upload files to Object Storage, in bucket "examplebucket":
 
 ```
 
@@ -290,7 +297,7 @@ Uploaded output.xdmf  [####################################]  100%
 
 ```
 <br></br>
-Perform a check from command line:
+Perform a check from command line, by listing the objects from bucket "examplebucket":
 ```
 root@fenics-instance:/opt/test# oci os object list -bn examplebucket
 {
@@ -341,7 +348,7 @@ root@fenics-instance:/opt/test# oci os object list -bn examplebucket
 
 ```
 
-... and Perform a check in the OCI Cloud:
+... and perform a check in the OCI Cloud:
 
 ![alt text](https://raw.githubusercontent.com/MuchTest/pix/main/b1/b3.png)
 
@@ -351,7 +358,7 @@ b) <b> Paraview host </b>
 
 
 As already mentioned, you don't need to install or configure anything at this step;
-setting up the Paraview and all the dependencies is done from the Terraform code (you can check remote_paraview.tf for more details)
+setting up the Paraview and all the dependencies is done from the Terraform code (you can check <i>remote_paraview.tf</i> for more details)
 
 All Paraview files and folders can be found at location /opt/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit of the paraview-instance host:
 
@@ -453,8 +460,19 @@ IdentityFile ~/.ssh/id_rsa
 ProxyCommand ssh -i ~/.ssh/id_rsa bastion -W %h:%p %r
 
 ```
+<br></br>
+On bastion host, enable the port-forwarding:
 
-Check if properly configured by running:
+```
+root@bastioninstance:~# cat /proc/sys/net/ipv4/ip_forward
+0
+root@bastioninstance:~# echo 1 >  /proc/sys/net/ipv4/ip_forward
+root@bastioninstance:~#  cat /proc/sys/net/ipv4/ip_forward
+1
+root@bastioninstance:~#
+```
+
+Check if ssh tunneling is properly configured by running:
 ```
 root@deploymentmachine:~#  ssh fenics
 Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1035-oracle x86_64)
@@ -478,7 +496,6 @@ ubuntu@bastioninstance:~$
 ```
 <br></br>
 
-Do the same for paraview 
 ```
 root@deploymentmachine:~#  ssh fenics
 Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1035-oracle x86_64)
@@ -492,9 +509,8 @@ ubuntu@paraview-instance:~$
 ```
 
 
-
 <br></br>
-b) Make port 11111 listening on machine from which you deployed:
+b) Make port 11111 listening on instance from which you deployed:
 
 ```
 root@deploymentmachine:~# ssh -R 11111:127.0.0.1:11111 para
@@ -517,7 +533,7 @@ c) Now, on your computer (the local computer on which there is installed Paravie
 root@ZACK:~# ssh -L 11111:127.0.0.1:11111 ubuntu@<IP of deploymentmachine>
 ```
 
-Check if port 11111 is listening on your personal laptop/computer:
+Check if port 11111 is listening on your personal laptop/computer (here, Windows 10 OS):
 
 
 ```
@@ -558,8 +574,12 @@ c) From the Paraview Client, go the the folder location on the Paraview Server, 
 
 ![alt text](https://raw.githubusercontent.com/MuchTest/pix/main/b1/para9.png)
 
-c) Import the file, and you should see the Cube mesh:
+d) Import the file, and you should see the Cube mesh:
 
 ![alt text](https://raw.githubusercontent.com/MuchTest/pix/main/b1/para10.png)
+
+e) When you disconnect from Paraview client, the Paraview server will output the connection as closed:
+
+![alt text](https://raw.githubusercontent.com/MuchTest/pix/main/b1/para11.png)
 
 
