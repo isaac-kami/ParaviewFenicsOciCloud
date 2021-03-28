@@ -15,9 +15,9 @@
 ![alt text](https://raw.githubusercontent.com/MuchTest/pix/main/b1/arch.jpg)
 
 <br></br>
-How to deploy:
+<b>How to deploy</b>
 
- Before deploying:
+ <i>Before deploying:</i>
 - provide the necessary information for variables.tf (such as tenancy OCID, etc) 
 - if needed, change the public ssh keys path for instances; is setup as:
 ```
