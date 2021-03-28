@@ -436,7 +436,7 @@ Accepting connection(s): paraview-instance:11111
 ```
 <br></br>
 
-<b> SSH Tunneling and Portforwarding </b>
+<b> SSH Tunneling and Port-Forwarding </b>
 
 Now that the Paraview server is running, you need to create a connection with a Paraview Client. 
 
@@ -528,7 +528,7 @@ root@deploymentmachine:~# ssh -R 11111:127.0.0.1:11111 para
 ```
 
 <br></br>
-Check status of 11111 port
+Check port 11111:
 ```
 root@deploymentmachine:~# lsof -i :11111
 COMMAND     PID USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME
@@ -555,8 +555,6 @@ LocalAddress                        LocalPort RemoteAddress                     
 ::1                                 11111     ::                                  0          Listen                     11384
 127.0.0.1                           11111     0.0.0.0                             0          Listen                     11384
 
-
-PS C:\Users\TekAdvice>
 ```
 
 <br></br>
