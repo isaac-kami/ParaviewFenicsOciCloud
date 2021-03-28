@@ -16,7 +16,7 @@ resource "oci_core_instance" "FenicsInstance" {
         ssh_authorized_keys = file("/root/.ssh/id_rsa.pub")
     }
    
-    # for vnics & extracting the public IP
+    # for vnics & extracting the private IP
 
     create_vnic_details {
         assign_public_ip = false
