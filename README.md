@@ -71,8 +71,10 @@ What the Terraform code will implement:
 
   <br></br>
 
-<i> As already stated, for Paraview and Fenics, the setup and dependencies configuration are done automatically. </i>
+<i> As already stated, Paraview and Fenics applications are installed and configured automatically </i>
+
   <br></br>
+  
 <b> Steps after deploying the architecture: </b>
 
 The "terraform apply" will provide the following output 
@@ -141,7 +143,7 @@ Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1035-oracle x86_64)
 
 <br></br>
 
-<b>Fenics and Paraview hosts to access the Object Storage</b>
+<b> Fenics and Paraview hosts to access the Object Storage </b>
 
 
 To access the Object Storage from Fenics instance and Paraview instance, configure OCI CLI on both of them.
@@ -423,7 +425,7 @@ root@paraview-instance:/opt/bucketexample#
 <br></br>
 b2) Start the Paraview Server
 
-All you need to do at this step is to start the Paraview server, so that it can start listening on port 11111:
+All you need to do at this step is to start the Paraview server, so that it can start listening on port 11111 for any possible connection from a Paraview Client:
 
 ```
 root@paraview-instance:/opt/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin#  ./pvserver
@@ -481,7 +483,7 @@ root@bastioninstance:~#  cat /proc/sys/net/ipv4/ip_forward
 root@bastioninstance:~#
 ```
 
-Check if ssh tunneling is properly configured by running:
+Check if ssh tunneling is setup:
 ```
 root@deploymentmachine:~#  ssh fenics
 Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1035-oracle x86_64)
