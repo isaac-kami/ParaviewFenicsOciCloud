@@ -5,7 +5,7 @@
 <b>Prerequisites for deploying this architecture with Terraform:</b>
   <br></br>
 
-- an Oracle cloud account - You can sign up for a 30 free days trial, at Oracle Cloud Free Tier
+- an Oracle cloud account - You can sign up for a 30 free days trial, at <a href="https://www.oracle.com/cloud/free/">Oracle Cloud Free Tier</a>
 - setting up OCI CLI. You can check this tutorial <a href="https://isaac-exe.gitbook.io/various-tutorials/tutorials/1.-deployment-instance/install-and-configure-oci-cli#2-configure-oci-cli">Configure OCI CLI </a>
 - setting up Terraform on the machine from which you make the deployment. You can check this tutorial <a href="https://isaac-exe.gitbook.io/various-tutorials/tutorials/1.-deployment-instance/install-and-configure-terraform">Install and Configure Terraform</a>
 
@@ -24,6 +24,13 @@ How to deploy:
   metadata = {
         ssh_authorized_keys = file("/root/.ssh/id_rsa.pub")
     }
+```
+- for finding the bucket namespace, run command
+```
+root@deploymentmachine:/home# oci os ns get
+{
+  "data": "some info here"
+}
 ```
 
 Configure, check and apply changes with the usual Terraform commands:
@@ -65,10 +72,11 @@ What the Terraform code will implement:
   <br></br>
 
 <i> As already stated, for Paraview and Fenics, the setup and dependencies configuration are done automatically. </i>
-
+  <br></br>
 <b> Steps after deploying the architecture: </b>
 
-The "terraform apply" will provide the following output (obviously, the IPs will be changed on your side. Treat this as an example)
+The "terraform apply" will provide the following output 
+(obviously, the IPs will be changed on your side. There is no static IP setup.)
 
 ```
 
@@ -214,7 +222,7 @@ Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1035-oracle x86_64)
 <br></br>
 <b>Implementing the Poisson example code from page 13</b>
 
-Suppose you run this code under folder /opt/test:
+Suppose you run the code from page 13 under folder /opt/test:
 
 ```
 root@fenics-instance:/opt/test# python3
@@ -418,7 +426,7 @@ b2) Start the Paraview Server
 All you need to do at this step is to start the Paraview server, so that it can start listening on port 11111:
 
 ```
-root@paraview-instance:/opt/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin#                                                    ./pvserver
+root@paraview-instance:/opt/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin#  ./pvserver
 Waiting for client...
 Connection URL: cs://paraview-instance:11111
 Accepting connection(s): paraview-instance:11111
@@ -430,10 +438,11 @@ Accepting connection(s): paraview-instance:11111
 
 Now that the Paraview server is running, you need to create a connection with a Paraview Client. 
 
-I suppose many of you have an idea of how to create SSH Tunneling and Port-Forwarding (since this a general requirement in the technical world),
-so I will not focus on the basics.
+<i>I suppose many of you have an idea of how to create SSH Tunneling and Port-Forwarding (since this a general requirement in the technical world),
+therefore I will not focus on the basics. </i>
 
-Steps:
+<br></br>
+<b>Steps:</b>
 
 a) On the machine from which you did the deployment/running Terraform code, 
 you will need to create a ssh configuration file that will allow ssh tunneling and port forwarding (change IPs accordingly to your Terraform output)
@@ -517,7 +526,7 @@ root@deploymentmachine:~# ssh -R 11111:127.0.0.1:11111 para
 ```
 
 <br></br>
-Check:= status of the port
+Check status of 11111 port
 ```
 root@deploymentmachine:~# lsof -i :11111
 COMMAND     PID USER   FD   TYPE   DEVICE SIZE/OFF NODE NAME
