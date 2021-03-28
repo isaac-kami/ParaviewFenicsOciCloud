@@ -17,14 +17,15 @@
 <br></br>
 How to deploy:
 
-<i> Before deploying, make sure:
-- you check the variables.tf and provide the necessary information (such as tenancy OCID, etc) 
-- if needed, change the public ssh keys path for instances; is setup as:  </i>
+ Before deploying:
+- provide the necessary information for variables.tf (such as tenancy OCID, etc) 
+- if needed, change the public ssh keys path for instances; is setup as:
 ```
   metadata = {
         ssh_authorized_keys = file("/root/.ssh/id_rsa.pub")
     }
 ```
+
 - for finding the bucket namespace, run command
 ```
 root@deploymentmachine:/home# oci os ns get
@@ -32,8 +33,8 @@ root@deploymentmachine:/home# oci os ns get
   "data": "some info here"
 }
 ```
-
-Configure, check and apply changes with the usual Terraform commands:
+<br></br>
+<b> Configure, inspect and apply changes with the usual Terraform commands: </b>
 
 ```
 terraform init
@@ -223,6 +224,8 @@ Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1035-oracle x86_64)
 ```
 <br></br>
 <b>Implementing the Poisson example code from page 13</b>
+Just as a reminder, we will be using this tutorial for code example: 
+https://fenicsproject.org/pub/course/lectures/2017-nordic-phdcourse/lecture_20_tools_for_visualisation.pdf
 
 Suppose you run the code from page 13 under folder /opt/test:
 
@@ -444,7 +447,7 @@ Now that the Paraview server is running, you need to create a connection with a 
 therefore I will not focus on the basics. </i>
 
 <br></br>
-<b>Steps:</b>
+<b>Steps (for this architecture): </b>
 
 a) On the machine from which you did the deployment/running Terraform code, 
 you will need to create a ssh configuration file that will allow ssh tunneling and port forwarding (change IPs accordingly to your Terraform output)
@@ -540,13 +543,14 @@ root@deploymentmachine:~#
 <br></br>
 c) Now, on your computer (the local computer on which there is installed Paraview Client with GUI), you also need to put port 11111 in Listening State:
 
+from WSL:
 ```
 root@ZACK:~# ssh -L 11111:127.0.0.1:11111 ubuntu@<IP of deploymentmachine>
 ```
 
 Check if port 11111 is listening on your personal laptop/computer (here, Windows 10 OS):
 
-
+from Powershell:
 ```
 PS C:\Users\ZACK> get-nettcpconnection | where {($_.State -eq "Listen") -and ($_.LocalPort -eq "11111")}
 
