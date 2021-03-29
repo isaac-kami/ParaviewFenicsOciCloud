@@ -452,7 +452,7 @@ therefore I will not focus on the basics. </i>
 a) On the machine from which you did the deployment/running Terraform code, 
 you will need to create a ssh configuration file that will allow ssh tunneling and port forwarding (change IPs accordingly to your Terraform output)
 
-<i> Also, do not forget to copy the ssh keys on the bastion. <i>
+<i> Also, do not forget to copy the ssh keys on the bastion. </i>
 
 ```
 root@deploymentmachine:~# scp /root/.ssh/id_rsa* ubuntu@1<bastionIP>:.ssh/
