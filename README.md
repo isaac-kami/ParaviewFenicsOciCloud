@@ -84,7 +84,7 @@ terraform apply
 ```
 
 <br></br>
-What the Terraform code will implement:
+<b> What the Terraform code will implement: </b>
 
 - create a compartment and a VCN
   <br></br>
