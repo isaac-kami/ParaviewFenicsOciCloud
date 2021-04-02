@@ -5,7 +5,7 @@
 <b>Prerequisites for deploying this architecture with Terraform:</b>
   <br></br>
 
-- an Oracle cloud account - You can sign up for a 30 free days trial, at <a href=" https://www.oracle.com/cloud/free/?source=:so:li:or:awr:ocorp:::RC_WWSA210303P00069:FreeTier&SC=:so:li:or:awr:ocorp:::RC_WWSA210303P00069:FreeTier&pcode=WWSA210303P00069">Oracle Cloud Free Tier</a>
+- an Oracle cloud account - You can sign up for a 30 free days trial, at <a href="https://www.oracle.com/cloud/free/?source=:so:li:or:awr:ocorp:::RC_WWSA210303P00069:FreeTier&SC=:so:li:or:awr:ocorp:::RC_WWSA210303P00069:FreeTier&pcode=WWSA210303P00069">Oracle Cloud Free Tier</a>
 - setting up OCI CLI. You can check this tutorial <a href="https://isaac-exe.gitbook.io/various-tutorials/tutorials/1.-deployment-instance/install-and-configure-oci-cli#2-configure-oci-cli">Configure OCI CLI </a>
 - setting up Terraform on the machine from which you make the deployment. You can check this tutorial <a href="https://isaac-exe.gitbook.io/various-tutorials/tutorials/1.-deployment-instance/install-and-configure-terraform">Install and Configure Terraform</a>
 
