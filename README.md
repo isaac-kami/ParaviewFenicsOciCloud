@@ -629,7 +629,7 @@ b) When Paraview connects, the Paraview Server should print the "Client connecte
 
 <br></br>
 
-c) From the Paraview Client, go the the folder location on the Paraview Server, where the output files were downloaded from the bucket:
+c) From the Paraview Client, go to the the folder location on the Paraview Server, where the output files were downloaded from the bucket:
 
 ![alt text](https://raw.githubusercontent.com/MuchTest/pix/main/b1/para8.png)
 
