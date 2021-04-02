@@ -70,7 +70,7 @@ variable "instance_shape" {
 
 For more details on the shape of instance, check official documentation link: <a href="https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm">Compute Shapes</a>
 
-This environment is setup to be run in a Free Tier trial. 
+This environment is setup to be run in a Free Tier trial. <br>
 If you need resources for a production environment - compute shapes with HPC or GPU -, you can submit for a service limit increase. 
 
 <br></br>
