@@ -5,21 +5,37 @@
 <b>Prerequisites for deploying this architecture with Terraform:</b>
   <br></br>
 
-- an Oracle cloud account - You can sign up for a 30 free days trial, at <a href="https://www.oracle.com/cloud/free/">Oracle Cloud Free Tier</a>
+- an Oracle cloud account - You can sign up for a 30 free days trial, at <a href=" https://www.oracle.com/cloud/free/?source=:so:li:or:awr:ocorp:::RC_WWSA210303P00069:FreeTier&SC=:so:li:or:awr:ocorp:::RC_WWSA210303P00069:FreeTier&pcode=WWSA210303P00069">Oracle Cloud Free Tier</a>
 - setting up OCI CLI. You can check this tutorial <a href="https://isaac-exe.gitbook.io/various-tutorials/tutorials/1.-deployment-instance/install-and-configure-oci-cli#2-configure-oci-cli">Configure OCI CLI </a>
 - setting up Terraform on the machine from which you make the deployment. You can check this tutorial <a href="https://isaac-exe.gitbook.io/various-tutorials/tutorials/1.-deployment-instance/install-and-configure-terraform">Install and Configure Terraform</a>
 
 <br></br>
 <b>Architecture</b>
 
+The architecture consists of following components: 
+
+- one Virtual Cloud Network (VCN) with firewall rules setup for port 22 (Bastion host, Paraview host, FEniCS host) and port 11111 on Paraview host
+- Subnets: 
+     - Public Subnet for Bastion host
+     - Private Subnet for Paraview and FEniCS hosts
+- Gateways:
+     - Internet Gateway -  enables connectivity between the Bastion host and Public Internet
+     - NAT Gateway - Paraview and FEniCS hosts are attached to private subnets in the VCN and they cannot be reached from the Public Internet
+     - Service Gateway -  enables hosts in the VCN to access the Object Storage
+
+
+
 ![alt text](https://raw.githubusercontent.com/MuchTest/pix/main/b1/arch.jpg)
 
+
+<i> where, <br> IG - Internet Gateway <br>
+    SG - Service Gateway </i>
 <br></br>
 <b>How to deploy</b>
 
  <i>Before deploying:</i>
 - provide the necessary information for variables.tf (such as tenancy OCID, etc) 
-- if needed, change the public ssh keys path for instances; is setup as:
+- if needed, change the public ssh keys path for instances; the ssh_authorized_keys field is set-up under paraview_nat_instance.tf and fenics_nat_instance.tf
 ```
   metadata = {
         ssh_authorized_keys = file("/root/.ssh/id_rsa.pub")
@@ -33,6 +49,30 @@ root@deploymentmachine:/home# oci os ns get
   "data": "some info here"
 }
 ```
+
+<b> About compute instances </b>
+
+You can change the shape of instances from variables.tf file:
+
+```
+# for shape paraway
+
+variable "instance_shape_par" {
+ default = "VM.Standard.E2.2"
+}
+
+# for bastion and FEniCS
+
+variable "instance_shape" {
+  default = "VM.Standard.E2.1"
+}
+```
+
+For more details on the shape of instance, check official documentation link: <a href="https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm">Compute Shapes</a>
+
+This environment is setup to be run in a Free Tier trial. 
+If you need resources for a production environment - compute shapes with HPC or GPU -, you can submit for a service limit increase. 
+
 <br></br>
 <b> Configure, inspect and apply changes with the usual Terraform commands: </b>
 
@@ -65,14 +105,14 @@ What the Terraform code will implement:
   <br></br>
 - deploy two  instances (private IPs) in a private subnet behind a NAT Gateway
   <br></br>
-- provision the two private instances with the two applications,  Paraview (server), respectively Fenics
+- provision the two private instances with the two applications,  Paraview (server) and FEniCS
   <br></br>
 ![alt text](https://raw.githubusercontent.com/MuchTest/pix/main/b1/ins1.png)
 ![alt text](https://raw.githubusercontent.com/MuchTest/pix/main/b1/n2.png)
 
   <br></br>
 
-<i> As already stated, Paraview and Fenics applications are installed and configured automatically </i>
+<i> As already stated, Paraview and FEniCS applications are installed and configured automatically </i>
 
   <br></br>
   
@@ -101,14 +141,14 @@ PublicIpBastion = [
 
 ```
 
-To access the Private Hosts (Fenics and Paraview), you will need to ssh through the bastion:
+To access the Private Hosts (FEniCS and Paraview), you will need to ssh through the bastion:
 
 <i> Syntax </i>:
 ```
 ssh -J ubuntu@bastion ubuntu@privatehost
 ```
 
-- to access Fenics host:
+- to access FEniCS host:
 
 ```
 root@deploymentmachine:/home/ParaviewFenicsOCI# ssh -J ubuntu@129.159.250.195 ubuntu@10.0.2.2
@@ -144,10 +184,10 @@ Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1035-oracle x86_64)
 
 <br></br>
 
-<b> Fenics and Paraview hosts to access the Object Storage </b>
+<b> Transfer data to Object Storage </b>
 
 
-To access the Object Storage from Fenics instance and Paraview instance, configure OCI CLI on both of them.
+To transfer data to Object Storage, configure OCI CLI on both FEniCS instance and Paraview instance.
 Make sure you add the public .pem key in the User/API Keys from OCI Cloud , otherwise you will not be able to upload or download to/from the Bucket.
 
 For setting up the OCI CLI and the API Keys in Oracle Cloud, follow this tutorial: <a href="https://isaac-exe.gitbook.io/various-tutorials/tutorials/1.-deployment-instance/install-and-configure-oci-cli#2-configure-oci-cli">Configure OCI CLI </a>
@@ -192,16 +232,16 @@ root@paraview-instance:/home#
 <br> </br>
 
 
-<b> Testing environment - Paraview and Fenics </b>
+<b> Testing environment - Paraview and FEniCS </b>
 
 
-a) On the Fenics instance, create the output files that can be represented graphically in Paraview Client
+a) On the FEniCS instance, create the output files that can be represented graphically in Paraview Client
 
 The code example for solving a Poisson problem can be found at below tutorial (page 13):
 https://fenicsproject.org/pub/course/lectures/2017-nordic-phdcourse/lecture_20_tools_for_visualisation.pdf
 
 
-As a reminder, the Fenics application has been configured and properly installed with Terraform code. 
+As a reminder, the FEniCS application has been configured and properly installed with Terraform code. 
 For more details, check code for <i>remote_fenics.tf</i>
 
 
@@ -224,8 +264,10 @@ Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1035-oracle x86_64)
 ```
 <br></br>
 <b>Implementing the Poisson example code from page 13</b>
-Just as a reminder, we will be using this tutorial for code example: 
+Just as a reminder, we will be using this tutorial for code example, to solve a Poisson problem: 
 https://fenicsproject.org/pub/course/lectures/2017-nordic-phdcourse/lecture_20_tools_for_visualisation.pdf
+
+This code example will solve a Poisson equation; the output files will be used to visualize a cube mesh.
 
 Suppose you run the code from page 13 under folder /opt/test:
 
