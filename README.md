@@ -70,8 +70,8 @@ variable "instance_shape" {
 
 For more details on the shape of instance, check official documentation link: <a href="https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm">Compute Shapes</a>
 
-This environment is setup to be run in a Free Tier trial. <br>
-If you need resources for a production environment - compute shapes with HPC or GPU -, you can submit for a service limit increase. 
+This environment is setup to be run in in an <a href="https://www.oracle.com/cloud/free/?source=:so:li:or:awr:ocorp:::RC_WWSA210303P00069:FreeTier&SC=:so:li:or:awr:ocorp:::RC_WWSA210303P00069:FreeTier&pcode=WWSA210303P00069">Always Free Oracle Cloud account</a>. <br>
+If you need resources for a production environment - compute shapes with HPC or GPU -, you can submit a request for a service limit increase as described <a href="https://docs.oracle.com/en-us/iaas/Content/General/Concepts/servicelimits.htm">here</a>.
 
 <br></br>
 <b> Configure, inspect and apply changes with the usual Terraform commands: </b>
